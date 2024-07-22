@@ -6,8 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigInteger;
 import java.util.List;
 
 @Repository
@@ -51,7 +49,7 @@ public class UserRepository implements IUserRepository{
     @Override
     public User loginUser(User user) {
         Session session = entityManager.unwrap(Session.class);
-        List resultList = session.createNativeQuery("SELECT * FROM users WHERE username=:userName AND password=SHA2(:password, 256)")
+        List<User> resultList = session.createNativeQuery("SELECT * FROM users WHERE username=:userName AND password=SHA2(:password, 256)")
                 .setParameter("userName", user.getUserName())
                 .setParameter("password", user.getPassword())
                 .getResultList();
