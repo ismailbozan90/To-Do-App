@@ -1,8 +1,6 @@
 package com.scamlet.todo_app.DTO;
 
-
 import lombok.Data;
-
 import java.util.Date;
 
 @Data

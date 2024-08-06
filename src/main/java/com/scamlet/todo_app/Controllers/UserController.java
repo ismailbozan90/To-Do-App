@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -22,7 +22,7 @@ public class UserController {
         this.iUserService = iUserService;
     }
 
-    @GetMapping("/getuserlist")
+    @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> getUserList() {
         List<UserDTO> userList = iUserService.getUserList();
         if (userList.isEmpty()) {
@@ -31,46 +31,28 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userList);
     }
 
-    @PostMapping("/adduser")
+    @PostMapping("/users")
     public ResponseEntity<UserDTO> addUser(@Valid @RequestBody User user) {
-        UserDTO result = iUserService.addUser(user);
-        if (result == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        Optional<UserDTO> result = iUserService.addUser(user);
+        return result.map(userDTO -> ResponseEntity.status(HttpStatus.OK).body(userDTO)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
-    @PostMapping("/updateuser")
+    @PutMapping("/users")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody User user) {
-        if (user.getId() == null || user.getId() <= 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        UserDTO result = iUserService.updateUser(user);
-        if (result == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        Optional<UserDTO> result = iUserService.updateUser(user);
+        return result.map(userDTO -> ResponseEntity.status(HttpStatus.OK).body(userDTO)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
-    @GetMapping("/deleteuser/{id}")
-    public ResponseEntity<UserDTO> deleteUser(@PathVariable Long id) {
-        if (id == null || id <= 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        UserDTO result = iUserService.deleteUser(id);
-        if (result == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<UserDTO> deleteUser(@Valid @PathVariable Long id) {
+        Optional<UserDTO> result = iUserService.deleteUser(id);
+        return result.map(userDTO -> ResponseEntity.status(HttpStatus.OK).body(userDTO)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @PostMapping("/login")
     public ResponseEntity<UserDTO> loginUser(@RequestBody User user) {
-        UserDTO result = iUserService.loginUser(user);
-        if (result == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return  ResponseEntity.status(HttpStatus.OK).body(result);
+        Optional<UserDTO> result = iUserService.loginUser(user);
+        return result.map(userDTO -> ResponseEntity.status(HttpStatus.OK).body(userDTO)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
 }

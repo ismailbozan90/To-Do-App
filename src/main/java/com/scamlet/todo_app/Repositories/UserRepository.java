@@ -23,7 +23,7 @@ public class UserRepository implements IUserRepository{
     public User addUser(User user) {
         Session session = entityManager.unwrap(Session.class);
         String sql = "INSERT INTO users (username, password) VALUES (:userName, SHA2(:password, 256))";
-        int result = session.createNativeQuery(sql)
+        int result = session.createNativeQuery(sql, User.class)
                 .setParameter("userName", user.getUserName())
                 .setParameter("password", user.getPassword())
                 .executeUpdate();
@@ -41,15 +41,14 @@ public class UserRepository implements IUserRepository{
         User findToDelete = session.get(User.class, id);
         if (findToDelete != null) {
             session.remove(findToDelete);
-            return findToDelete;
         }
-        return null;
+        return findToDelete;
     }
 
     @Override
     public User loginUser(User user) {
         Session session = entityManager.unwrap(Session.class);
-        List<User> resultList = session.createNativeQuery("SELECT * FROM users WHERE username=:userName AND password=SHA2(:password, 256)")
+        List<User> resultList = session.createNativeQuery("SELECT * FROM users u WHERE u.userName=:userName AND u.password=SHA2(:password, 256)", User.class)
                 .setParameter("userName", user.getUserName())
                 .setParameter("password", user.getPassword())
                 .getResultList();
@@ -64,8 +63,8 @@ public class UserRepository implements IUserRepository{
     @Override
     public User updateUser(User user) {
         Session session = entityManager.unwrap(Session.class);
-        String sql = "UPDATE users SET username=:userName, password=SHA2(:password, 256) WHERE id=:id";
-        int result = session.createNativeQuery(sql)
+        String sql = "UPDATE users u SET u.userName=:userName, u.password=SHA2(:password, 256) WHERE u.id=:id";
+        int result = session.createNativeQuery(sql, User.class)
                 .setParameter("userName", user.getUserName())
                 .setParameter("password", user.getPassword())
                 .setParameter("id", user.getId())
@@ -81,7 +80,7 @@ public class UserRepository implements IUserRepository{
     @Override
     public List<User> getUserList() {
         Session session = entityManager.unwrap(Session.class);
-        return session.createQuery("from User").getResultList();
+        return session.createQuery("from User", User.class).getResultList();
 
     }
 }

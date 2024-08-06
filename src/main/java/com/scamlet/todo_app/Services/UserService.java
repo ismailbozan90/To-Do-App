@@ -7,7 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
@@ -22,45 +22,44 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDTO addUser(User user) {
+    public Optional<UserDTO> addUser(User user) {
         User result = iUserRepository.addUser(user);
         if (result == null) {
-            return null;
+            return Optional.empty();
         }
-        return modelmapper.map(result, UserDTO.class);
+        return Optional.of(modelmapper.map(result, UserDTO.class));
     }
 
     @Override
-    public UserDTO deleteUser(Long id) {
+    public Optional<UserDTO> deleteUser(Long id) {
         User result = iUserRepository.deleteUser(id);
         if (result == null) {
-            return null;
+            return Optional.empty();
         }
-        return modelmapper.map(result, UserDTO.class);
+        return Optional.of(modelmapper.map(result, UserDTO.class));
     }
 
     @Override
-    public UserDTO updateUser(User user) {
+    public Optional<UserDTO> updateUser(User user) {
         User result = iUserRepository.updateUser(user);
         if (result == null) {
-            return null;
+            return Optional.empty();
         }
-        return modelmapper.map(result, UserDTO.class);
+        return Optional.of(modelmapper.map(result, UserDTO.class));
     }
 
     @Override
-    public UserDTO loginUser(User user) {
+    public Optional<UserDTO> loginUser(User user) {
         User result = iUserRepository.loginUser(user);
         if (result == null) {
-            return null;
+            return Optional.empty();
         }
-        return modelmapper.map(result, UserDTO.class);
+        return Optional.of(modelmapper.map(result, UserDTO.class));
     }
 
     @Override
     public List<UserDTO> getUserList() {
         List<User> userList = iUserRepository.getUserList();
-        List<UserDTO> userDTOList = userList.stream().map(user->modelmapper.map(user, UserDTO.class)).collect(Collectors.toList());
-        return userDTOList;
+        return userList.stream().map(user->modelmapper.map(user, UserDTO.class)).toList();
     }
 }

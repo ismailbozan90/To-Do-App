@@ -2,14 +2,14 @@ package com.scamlet.todo_app.Services;
 
 import com.scamlet.todo_app.DTO.TaskDTO;
 import com.scamlet.todo_app.Entities.Task;
-
 import java.util.List;
+import java.util.Optional;
 
 public interface ITaskService {
 
-    TaskDTO addTask(Task user);
-    TaskDTO deleteTask(Long id);
-    TaskDTO updateTask(Task user);
+    Optional<TaskDTO> addTask(Task user);
+    Optional<TaskDTO> deleteTask(Long id);
+    Optional<TaskDTO> updateTask(Task user);
     List<TaskDTO> getTaskList();
 
 }
